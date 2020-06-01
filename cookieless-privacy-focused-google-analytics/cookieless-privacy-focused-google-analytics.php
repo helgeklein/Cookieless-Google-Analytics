@@ -37,7 +37,8 @@ class CookielessGoogleAnalytics
    // Plugin defaults
    private $defaultSettings = array(
       'gatrackingcode'     => '',
-      'validityperiod'     => 4
+      'validityperiod'     => 4,
+      'enableforadmins'    => false
    );
 
 
@@ -167,6 +168,17 @@ class CookielessGoogleAnalytics
             'helper' => '',
             'supplemental' => 'Number of stays before the hash changes. A shorter interval improves privacy but makes session tracking more unreliable.',
             'default' => $this->defaultSettings['validityperiod']
+         ),
+         array
+         (
+            'uid' => 'enableforadmins',
+            'label' => 'Enable for admins:',
+            'section' => 'cpfga_section_adv',
+            'type' => 'checkbox',
+            'placeholder' => '',
+            'helper' => 'Add the data collection script for users with admin privileges (WordPress capability manage_options)?',
+            'supplemental' => '',
+            'default' => $this->defaultSettings['enableforadmins']
          )
       );
       
@@ -261,6 +273,10 @@ class CookielessGoogleAnalytics
 
       // Ignore the backend (admin pages)
       if (is_admin())
+         return;
+
+      // Ignore admins on the frontend
+      if (current_user_can('manage_options'))
          return;
 
       // Build the output string
