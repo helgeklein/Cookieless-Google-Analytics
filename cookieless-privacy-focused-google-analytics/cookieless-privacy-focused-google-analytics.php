@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Cookieless Privacy-Focused Google Analytics
- * Description: Enables Google Analytics without setting cookies or storing any data in the browser. User consent should not be necessary.
- * Version: 1.0.0
+ * Description: Enables Google Analytics without setting cookies or storing any data in the browser. Asking for user consent in the frontend should not be necessary.
+ * Version: 1.0.1
  * Author: Helge Klein
  * Author URI: https://helgeklein.com
  * License: GPL2
@@ -38,7 +38,7 @@ class CookielessGoogleAnalytics
    private $defaultSettings = array(
       'gatrackingcode'     => '',
       'validityperiod'     => 4,
-      'enableforadmins'    => false
+      'enableforadmins'    => ''
    );
 
 
@@ -63,6 +63,9 @@ class CookielessGoogleAnalytics
       // Register settings fields
       add_action ('admin_init', array($this, 'AdmSetupFields'));
 
+      // Add a link to the plugin's settings on the plugins page
+      add_filter ('plugin_action_links', array($this, 'AdmAddActionLinks'), 10, 5);
+
       //
       // Plugin functionality
       //
@@ -74,6 +77,28 @@ class CookielessGoogleAnalytics
    // Admin menu
    //
    ///////////////////////////////////////////////////////////////////
+
+   //
+   // Add a link to the plugin's settings on the plugins page
+   // Source: https://codex.wordpress.org/Plugin_API/Filter_Reference/plugin_action_links_(plugin_file_name)
+   //
+   function AdmAddActionLinks ($actions, $plugin_file)
+   {
+      static $plugin;
+
+      if (!isset($plugin))
+         $plugin = plugin_basename (__FILE__);
+
+      if ($plugin == $plugin_file)
+      {
+         $settings = array ('settings' => '<a href="options-general.php?page=' . $this->slug . '">Settings</a>');
+      
+         $actions = array_merge ($settings, $actions);
+      }
+      
+      return $actions;
+   }
+
 
    //
    // Create the settings page as a submenu of general settings
@@ -175,9 +200,8 @@ class CookielessGoogleAnalytics
             'label' => 'Enable for admins:',
             'section' => 'cpfga_section_adv',
             'type' => 'checkbox',
-            'placeholder' => '',
-            'helper' => 'Add the data collection script for users with admin privileges (WordPress capability manage_options)?',
-            'supplemental' => '',
+            'helper' => '',
+            'supplemental' => 'Add the data collection script for users with admin privileges (WordPress capability manage_options)?',
             'default' => $this->defaultSettings['enableforadmins']
          )
       );
@@ -218,6 +242,9 @@ class CookielessGoogleAnalytics
             break;
          case 'textarea':
             printf('<textarea name="%1$s" id="%1$s" placeholder="%2$s" rows="5" cols="50">%3$s</textarea>', $arguments['uid'], $arguments['placeholder'], $value);
+            break;
+         case 'checkbox':
+            printf('<input name="%1$s" id="%1$s" type="%2$s" value="1" %3$s />', $arguments['uid'], $arguments['type'], $value == '1' ? 'checked' : '');
             break;
          case 'select':
          case 'multiselect':
@@ -275,8 +302,8 @@ class CookielessGoogleAnalytics
       if (is_admin())
          return;
 
-      // Ignore admins on the frontend
-      if (current_user_can('manage_options'))
+      // Ignore admins on the frontend unless allowed by the configuration
+      if (current_user_can('manage_options') && empty($settings['enableforadmins']))
          return;
 
       // Build the output string

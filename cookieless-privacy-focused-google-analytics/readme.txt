@@ -7,13 +7,15 @@ Requires PHP: 7.0
 Stable tag: trunk
 License: GPL2
 
-Enables Google Analytics without setting cookies or storing any data in the browser. User consent should not be necessary.
+Enables Google Analytics without setting cookies or storing any data in the browser. Asking for user consent in the frontend should not be necessary.
 
 == Description ==
 
 Cookieless Privacy-Focused Google Analytics adds the GA tracking script to your site while configuring it in such a way that no cookies or other data are stored in the end user's browser. With this plugin, it should not be necessary to ask for user consent in order to be compliant with GDPR and other EU legislation.
 
 Being able to **use Google Analytics without having to display a cookie consent dialog** was the primary motivation behind the plugin.
+
+IP address anonymization via `anonymizeIp` is enabled by the plugin, too, of course.
 
 # How It Works
 
@@ -43,7 +45,13 @@ The following components are used to build the client ID (the string that is the
 
 # Usage
 
-Install the plugin and add your Google Analytics tracking code (UA-xxxxxx-y). That's it.
+Install the plugin and add your Google Analytics tracking code (`UA-xxxxxx-y`). That's it.
+
+## Configurable Settings
+
+* Google Analytics tracking code
+* Validity period of the client ID in days (default: 4)
+* Enable the analytics script for WordPress admins (users that have the capability `manage_options`)? (default: no)
 
 == Installation ==
 
