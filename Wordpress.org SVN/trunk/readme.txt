@@ -73,6 +73,10 @@ Upgrades are in line with WordPress standards.
 
 == Changelog ==
 
+= 1.0.1 =
+
+* Public release on wordpress.org
+
 = 1.0.0 =
 
 * Initial release
