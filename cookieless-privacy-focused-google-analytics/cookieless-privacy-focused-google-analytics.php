@@ -372,5 +372,3 @@ EndOfHeredoc;
 
 // Instantiate a class object
 $CookielessGoogleAnalytics = new CookielessGoogleAnalytics();
-
-?>
