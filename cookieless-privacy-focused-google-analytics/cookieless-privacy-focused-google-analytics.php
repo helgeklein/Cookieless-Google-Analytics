@@ -310,6 +310,12 @@ class CookielessGoogleAnalytics
       $output = <<<EndOfHeredoc
 
 <script>
+if (!Math.imul) Math.imul = function(opA, opB) {
+   opB |= 0;
+   var result = (opA & 0x003fffff) * opB;
+   if (opA & 0xffc00000) result += (opA & 0xffc00000) * opB|0;
+   return result|0;
+};
 const cyrb53 = function(str, seed = 0) {
    let h1 = 0xdeadbeef ^ seed,
       h2 = 0x41c6ce57 ^ seed;
@@ -366,5 +372,3 @@ EndOfHeredoc;
 
 // Instantiate a class object
 $CookielessGoogleAnalytics = new CookielessGoogleAnalytics();
-
-?>
