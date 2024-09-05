@@ -309,6 +309,8 @@ class CookielessGoogleAnalytics
       // Build the output string
       $output = <<<EndOfHeredoc
 
+<script async src="https://www.googletagmanager.com/gtag/js?id={$settings['gatrackingcode']}">
+</script>
 <script>
 const cyrb53 = function(str, seed = 0) {
    let h1 = 0xdeadbeef ^ seed,
@@ -328,17 +330,14 @@ let validityInterval = Math.round (new Date() / 1000 / 3600 / 24 / {$settings['v
 let clientIDSource = clientIP + ";" + window.location.host + ";" + navigator.userAgent + ";" + navigator.language + ";" + validityInterval;
 let clientIDHashed = cyrb53(clientIDSource).toString(16);
 
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-ga('create', '{$settings['gatrackingcode']}', {
-   'storage': 'none',
-   'clientId': clientIDHashed
-});
-ga('set', 'anonymizeIp', true);
-ga('send', 'pageview');
+window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', '{$settings['gatrackingcode']}', {
+    'anonymize_ip': true,
+    'client_id': clientIDHashed
+  });
+  gtag('event', 'page_view');
 </script>
 
 EndOfHeredoc;
