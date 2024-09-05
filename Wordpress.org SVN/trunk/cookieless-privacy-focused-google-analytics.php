@@ -337,6 +337,7 @@ window.dataLayer = window.dataLayer || [];
     'anonymize_ip': true,
     'client_id': clientIDHashed
   });
+  gtag('event', 'page_view');
 </script>
 
 EndOfHeredoc;
